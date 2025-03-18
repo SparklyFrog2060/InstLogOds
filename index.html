@@ -1,0 +1,907 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Konkurs InstaLogik</title>
+    <style>
+        :root {
+            --primary: #4a6bff;
+            --primary-dark: #3a56d4;
+            --secondary: #ff7e5f;
+            --background: #f9f9ff;
+            --sidebar-bg: #2a3147;
+            --white: #ffffff;
+            --gray-light: #f1f1f5;
+            --gray: #dddddd;
+            --text: #333333;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--background);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            transition: all 0.3s ease;
+        }
+        
+        /* Sidebar Styles */
+        .sidebar {
+            width: 260px;
+            height: 100vh;
+            background-color: var(--sidebar-bg);
+            color: var(--white);
+            position: fixed;
+            transition: all 0.4s ease;
+            overflow-y: auto;
+            z-index: 100;
+        }
+        
+        .sidebar-header {
+            padding: 20px;
+            text-align: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .sidebar-logo {
+            font-size: 26px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: var(--white);
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: pulse 2s infinite;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            padding: 15px 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--gray-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            overflow: hidden;
+        }
+        
+        .avatar-text {
+            font-weight: bold;
+            color: var(--sidebar-bg);
+        }
+        
+        .user-name {
+            font-weight: 500;
+            font-size: 14px;
+        }
+        
+        .user-role {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        .logout-btn {
+            background-color: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: var(--white);
+            padding: 8px 12px;
+            border-radius: 4px;
+            margin-top: 10px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.3s ease;
+            display: block;
+            width: 100%;
+        }
+        
+        .logout-btn:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        .sidebar-menu {
+            padding: 10px 0;
+        }
+        
+        .menu-heading {
+            padding: 10px 20px;
+            font-size: 12px;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.5);
+            letter-spacing: 1px;
+        }
+        
+        .menu-item {
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .menu-item:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        .menu-item.active {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-left: 3px solid var(--primary);
+        }
+        
+        .menu-item i {
+            margin-right: 15px;
+            font-size: 16px;
+        }
+        
+        .menu-item span {
+            font-size: 14px;
+        }
+        
+        /* Main Content Styles */
+        .main-content {
+            flex: 1;
+            margin-left: 260px;
+            padding: 30px;
+            transition: all 0.3s ease;
+        }
+        
+        .content-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            animation: slideDown 0.5s ease;
+        }
+        
+        .page-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--text);
+        }
+        
+        .breadcrumb {
+            display: flex;
+            list-style: none;
+        }
+        
+        .breadcrumb li {
+            margin-right: 10px;
+            font-size: 14px;
+            color: var(--primary);
+            position: relative;
+        }
+        
+        .breadcrumb li:not(:last-child)::after {
+            content: '/';
+            margin-left: 10px;
+            color: var(--gray);
+        }
+        
+        .breadcrumb li:last-child {
+            color: var(--text);
+        }
+        
+        .content-section {
+            background-color: var(--white);
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            padding: 25px;
+            margin-bottom: 30px;
+            animation: fadeIn 0.8s ease;
+        }
+        
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: var(--text);
+            position: relative;
+            padding-bottom: 10px;
+        }
+        
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 50px;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            border-radius: 10px;
+        }
+        
+        .competition-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .competition-status {
+            display: flex;
+            align-items: center;
+        }
+        
+        .status-indicator {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: #4caf50;
+            margin-right: 8px;
+            animation: pulse 2s infinite;
+        }
+        
+        .status-text {
+            font-size: 14px;
+            font-weight: 500;
+            color: #4caf50;
+        }
+        
+        .timer {
+            display: flex;
+            align-items: center;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        
+        .timer i {
+            margin-right: 8px;
+            color: var(--primary);
+        }
+        
+        .competition-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .detail-card {
+            background-color: var(--gray-light);
+            border-radius: 8px;
+            padding: 20px;
+            transition: all 0.3s ease;
+        }
+        
+        .detail-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        .detail-card-header {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: var(--primary);
+        }
+        
+        .detail-card-content {
+            font-size: 24px;
+            font-weight: 700;
+        }
+        
+        .detail-card-footer {
+            font-size: 12px;
+            color: rgba(0, 0, 0, 0.5);
+            margin-top: 10px;
+        }
+        
+        .task-list {
+            margin-top: 20px;
+        }
+        
+        .task-item {
+            background-color: var(--white);
+            border: 1px solid var(--gray);
+            border-radius: 6px;
+            padding: 15px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+        
+        .task-item:hover {
+            transform: translateX(5px);
+            border-left: 3px solid var(--primary);
+        }
+        
+        .task-info {
+            flex: 1;
+        }
+        
+        .task-name {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .task-description {
+            font-size: 14px;
+            color: rgba(0, 0, 0, 0.6);
+        }
+        
+        .task-meta {
+            display: flex;
+            align-items: center;
+            margin-top: 8px;
+        }
+        
+        .task-difficulty {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            margin-right: 10px;
+        }
+        
+        .easy {
+            background-color: #e6f7e6;
+            color: #4caf50;
+        }
+        
+        .medium {
+            background-color: #fff8e6;
+            color: #ff9800;
+        }
+        
+        .hard {
+            background-color: #ffebee;
+            color: #f44336;
+        }
+        
+        .task-points {
+            font-size: 12px;
+            color: var(--primary);
+            font-weight: 600;
+        }
+        
+        .task-action {
+            margin-left: 20px;
+        }
+        
+        .btn {
+            padding: 8px 15px;
+            border-radius: 4px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            font-size: 14px;
+            display: inline-flex;
+            align-items: center;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary);
+            color: var(--white);
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+        }
+        
+        .btn i {
+            margin-right: 8px;
+        }
+        
+        .leaderboard {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        
+        .leaderboard th, .leaderboard td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid var(--gray);
+        }
+        
+        .leaderboard th {
+            font-weight: 600;
+            color: var(--text);
+            background-color: var(--gray-light);
+        }
+        
+        .leaderboard tr:hover {
+            background-color: rgba(0, 0, 0, 0.02);
+        }
+        
+        .leaderboard .rank {
+            font-weight: 700;
+            width: 50px;
+        }
+        
+        .leaderboard .user {
+            display: flex;
+            align-items: center;
+        }
+        
+        .leaderboard .user-avatar {
+            width: 30px;
+            height: 30px;
+            margin-right: 10px;
+            background-color: var(--primary);
+            color: var(--white);
+        }
+        
+        .leaderboard .points {
+            font-weight: 600;
+            color: var(--primary);
+        }
+        
+        .leaderboard .podium {
+            font-weight: 700;
+        }
+        
+        .rank-1 {
+            color: gold;
+        }
+        
+        .rank-2 {
+            color: silver;
+        }
+        
+        .rank-3 {
+            color: #cd7f32;
+        }
+        
+        .toggle-sidebar {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 101;
+            background-color: var(--primary);
+            color: var(--white);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+            display: none;
+        }
+        
+        /* Animations */
+        @keyframes fadeIn {
+            0% {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes slideDown {
+            0% {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes pulse {
+            0% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.6;
+            }
+            100% {
+                opacity: 1;
+            }
+        }
+        
+        /* Tab Content */
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        /* Responsive Styles */
+        @media (max-width: 992px) {
+            .sidebar {
+                width: 220px;
+                transform: translateX(0);
+            }
+            
+            .main-content {
+                margin-left: 220px;
+            }
+            
+            .sidebar.collapsed {
+                transform: translateX(-100%);
+            }
+            
+            .main-content.expanded {
+                margin-left: 0;
+            }
+            
+            .toggle-sidebar {
+                display: flex;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 260px;
+                transform: translateX(-100%);
+            }
+            
+            .main-content {
+                margin-left: 0;
+            }
+            
+            .sidebar.active {
+                transform: translateX(0);
+            }
+            
+            .toggle-sidebar {
+                display: flex;
+            }
+            
+            .competition-details {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="toggle-sidebar">
+        <i>☰</i>
+    </div>
+    
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-logo">InstaLogik</div>
+        </div>
+        
+        <div class="user-info">
+            <div class="user-avatar">
+                <span class="avatar-text">JK</span>
+            </div>
+            <div>
+                <div class="user-name">Jan Kowalski</div>
+                <div class="user-role">Uczestnik</div>
+                <button class="logout-btn">Wyloguj się</button>
+            </div>
+        </div>
+        
+        <div class="sidebar-menu">
+            <div class="menu-heading">Nawigacja</div>
+            <div class="menu-item active" data-tab="dashboard">
+                <i>📊</i>
+                <span>Pulpit</span>
+            </div>
+            <div class="menu-item" data-tab="tasks">
+                <i>📝</i>
+                <span>Zadania</span>
+            </div>
+            <div class="menu-item" data-tab="leaderboard">
+                <i>🏆</i>
+                <span>Ranking</span>
+            </div>
+            <div class="menu-item" data-tab="rules">
+                <i>📜</i>
+                <span>Regulamin</span>
+            </div>
+            <div class="menu-heading">Profil</div>
+            <div class="menu-item" data-tab="profile">
+                <i>👤</i>
+                <span>Mój profil</span>
+            </div>
+            <div class="menu-item" data-tab="settings">
+                <i>⚙️</i>
+                <span>Ustawienia</span>
+            </div>
+        </div>
+    </div>
+    
+    <div class="main-content">
+        <!-- Dashboard Tab -->
+        <div class="tab-content active" id="dashboard">
+            <div class="content-header">
+                <h1 class="page-title">Pulpit</h1>
+                <ul class="breadcrumb">
+                    <li>Główna</li>
+                    <li>Pulpit</li>
+                </ul>
+            </div>
+            
+            <div class="content-section">
+                <div class="competition-header">
+                    <h2 class="section-title">Konkurs InstaLogik 2025</h2>
+                    <div class="competition-status">
+                        <div class="status-indicator"></div>
+                        <span class="status-text">Aktywny</span>
+                    </div>
+                </div>
+                
+                <div class="timer">
+                    <i>⏱️</i>
+                    <span id="countdown">Do końca konkursu pozostało: 12 dni, 15 godzin, 34 minuty</span>
+                </div>
+                
+                <div class="competition-details">
+                    <div class="detail-card">
+                        <div class="detail-card-header">Twój wynik</div>
+                        <div class="detail-card-content">280 pkt</div>
+                        <div class="detail-card-footer">+40 punktów od wczoraj</div>
+                    </div>
+                    <div class="detail-card">
+                        <div class="detail-card-header">Twoja pozycja</div>
+                        <div class="detail-card-content">#5</div>
+                        <div class="detail-card-footer">W górę o 2 miejsca</div>
+                    </div>
+                    <div class="detail-card">
+                        <div class="detail-card-header">Rozwiązane zadania</div>
+                        <div class="detail-card-content">7/15</div>
+                        <div class="detail-card-footer">46% ukończono</div>
+                    </div>
+                </div>
+                
+                <h3 class="section-title">Ostatnia aktywność</h3>
+                <div class="task-list">
+                    <div class="task-item">
+                        <div class="task-info">
+                            <div class="task-name">Algorytm Dijkstry - implementacja</div>
+                            <div class="task-description">Zaimplementuj algorytm Dijkstry do wyszukiwania najkrótszej ścieżki w grafie.</div>
+                            <div class="task-meta">
+                                <span class="task-difficulty medium">Średni</span>
+                                <span class="task-points">Zdobyto: 40 pkt</span>
+                            </div>
+                        </div>
+                        <div class="task-action">
+                            <button class="btn btn-primary">
+                                <i>✓</i> Ukończono
+                            </button>
+                        </div>
+                    </div>
+                    <div class="task-item">
+                        <div class="task-info">
+                            <div class="task-name">Sortowanie przez kopcowanie</div>
+                            <div class="task-description">Zaimplementuj sortowanie przez kopcowanie (heap sort) i analizę jego złożoności.</div>
+                            <div class="task-meta">
+                                <span class="task-difficulty hard">Trudny</span>
+                                <span class="task-points">Możliwe punkty: 60 pkt</span>
+                            </div>
+                        </div>
+                        <div class="task-action">
+                            <button class="btn btn-primary">
+                                <i>▶️</i> Rozpocznij
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Tasks Tab -->
+        <div class="tab-content" id="tasks">
+            <div class="content-header">
+                <h1 class="page-title">Zadania</h1>
+                <ul class="breadcrumb">
+                    <li>Główna</li>
+                    <li>Zadania</li>
+                </ul>
+            </div>
+            
+            <div class="content-section">
+                <h2 class="section-title">Lista zadań</h2>
+                <div class="task-list">
+                    <div class="task-item">
+                        <div class="task-info">
+                            <div class="task-name">Palindromy</div>
+                            <div class="task-description">Napisz funkcję sprawdzającą czy podany ciąg znaków jest palindromem.</div>
+                            <div class="task-meta">
+                                <span class="task-difficulty easy">Łatwy</span>
+                                <span class="task-points">Możliwe punkty: 20 pkt</span>
+                            </div>
+                        </div>
+                        <div class="task-action">
+                            <button class="btn btn-primary">
+                                <i>✓</i> Ukończono
+                            </button>
+                        </div>
+                    </div>
+                    <div class="task-item">
+                        <div class="task-info">
+                            <div class="task-name">Anagram</div>
+                            <div class="task-description">Napisz funkcję sprawdzającą czy dwa słowa są anagramami.</div>
+                            <div class="task-meta">
+                                <span class="task-difficulty easy">Łatwy</span>
+                                <span class="task-points">Możliwe punkty: 20 pkt</span>
+                            </div>
+                        </div>
+                        <div class="task-action">
+                            <button class="btn btn-primary">
+                                <i>✓</i> Ukończono
+                            </button>
+                        </div>
+                    </div>
+                    <div class="task-item">
+                        <div class="task-info">
+                            <div class="task-name">Algorytm Dijkstry - implementacja</div>
+                            <div class="task-description">Zaimplementuj algorytm Dijkstry do wyszukiwania najkrótszej ścieżki w grafie.</div>
+                            <div class="task-meta">
+                                <span class="task-difficulty medium">Średni</span>
+                                <span class="task-points">Zdobyto: 40 pkt</span>
+                            </div>
+                        </div>
+                        <div class="task-action">
+                            <button class="btn btn-primary">
+                                <i>✓</i> Ukończono
+                            </button>
+                        </div>
+                    </div>
+                    <div class="task-item">
+                        <div class="task-info">
+                            <div class="task-name">Drzewo binarne</div>
+                            <div class="task-description">Zaimplementuj drzewo binarne i podstawowe operacje na nim.</div>
+                            <div class="task-meta">
+                                <span class="task-difficulty medium">Średni</span>
+                                <span class="task-points">Możliwe punkty: 40 pkt</span>
+                            </div>
+                        </div>
+                        <div class="task-action">
+                            <button class="btn btn-primary">
+                                <i>▶️</i> Rozpocznij
+                            </button>
+                        </div>
+                    </div>
+                    <div class="task-item">
+                        <div class="task-info">
+                            <div class="task-name">Sortowanie przez kopcowanie</div>
+                            <div class="task-description">Zaimplementuj sortowanie przez kopcowanie (heap sort) i analizę jego złożoności.</div>
+                            <div class="task-meta">
+                                <span class="task-difficulty hard">Trudny</span>
+                                <span class="task-points">Możliwe punkty: 60 pkt</span>
+                            </div>
+                        </div>
+                        <div class="task-action">
+                            <button class="btn btn-primary">
+                                <i>▶️</i> Rozpocznij
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Leaderboard Tab -->
+        <div class="tab-content" id="leaderboard">
+            <div class="content-header">
+                <h1 class="page-title">Ranking</h1>
+                <ul class="breadcrumb">
+                    <li>Główna</li>
+                    <li>Ranking</li>
+                </ul>
+            </div>
+            
+            <div class="content-section">
+                <h2 class="section-title">Najlepsi uczestnicy</h2>
+                <table class="leaderboard">
+                    <thead>
+                        <tr>
+                            <th>Pozycja</th>
+                            <th>Uczestnik</th>
+                            <th>Rozwiązane zadania</th>
+                            <th>Punkty</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="rank podium rank-1">1</td>
+                            <td class="user">
+                                <div class="user-avatar"><span>AK</span></div>
+                                <span>Anna Kwiatkowska</span>
+                            </td>
+                            <td>12/15</td>
+                            <td class="points">540</td>
+                        </tr>
+                        <tr>
+                            <td class="rank podium rank-2">2</td>
+                            <td class="user">
+                                <div class="user-avatar"><span>MS</span></div>
+                                <span>Marcin Szymański</span>
+                            </td>
+                            <td>11/15</td>
+                            <td class="points">480</td>
+                        </tr>
+                        <tr>
+                            <td class="rank podium rank-3">3</td>
+                            <td class="user">
+                                <div class="user-avatar"><span>KL</span></div>
+                                <span>Karolina Lisiecka</span>
+                            </td>
+                            <td>10/15</td>
+                            <td class="points">420</td>
+                        </tr>
+                        <tr>
+                            <td class="rank">4</td>
+                            <td class="user">
+                                <div class="user-avatar"><span>PW</span></div>
+                                <span>Piotr Witkowski</span>
+                            </td>
+                            <td>9/15</td>
+                            <td class="points">380</td>
+                        </tr>
+                        <tr>
+                            <td class="rank">5</td>
+                            <td class="user">
+                                <div class="user-avatar"><span>JK</span></div>
+                                <span>Jan Kowalski</span>
+                            </td>
+                            <td>7/15</td>
+                            <td class="points">280</td>
+                        </tr>
+                        <tr>
+                            <td class="rank">6</td>
+                            <td class="user">
+                                <div class="user-avatar"><span>MN</span></div>
+                                <span>Marta Nowak</span>
+                            </td>
+                            <td>6/15</td>
+                            <td class="points">240</td>
+                        </tr>
+                        <tr>
+                            <td class="rank">7</td>
+                            <td class="user">
+                                <div class="user-avatar"><span>TZ</span></div>
+                                <span>Tomasz Zieliński</span>
+                            </td>
+                            <td>5/15</td>
+                            <td class="points">200</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <!-- Rules Tab -->
+        <div class="tab-content" id="rules">
+            <div class="content-header">
+                <h1 class="page-title">Regulamin</h1>
+                <ul class="breadcrumb">
+                    <li>Główna</li>
+                    <li>Regulamin</li>
+                </ul>
+            </div>
+            
+            <div class="content-section">
+                <h2 class="section-title">Regulamin konkursu InstaLogik 2025</h2>
+                
+                <h3 style="margin-top: 20px; margin-bottom: 10px;">1. Informacje ogólne</h3>
+                <p>Konkurs InstaLogik 2025 jest organizowany przez Instytut Informatyki i ma na celu promowanie umiejętności logicznego myślenia i programowania wśród uczestników. Konkurs trwa od 1 marca do 1 kwietnia 2025 roku.</p>
+                
+                <h3 style="margin-top: 20px; margin-bottom: 10px;">2. Zasady uczestnictwa</h3>
+                <p>2.1. Uczestnikiem konkursu może być każda osoba, która dokona rejestracji na platformie InstaLogik.</p>
+                <p>2.2. Uczestnik
